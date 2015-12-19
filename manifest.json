@@ -1,0 +1,63 @@
+﻿{
+  // 必选
+  "name": "QQ群助手",
+  "version": "1.0",
+  "manifest_version": 2,
+
+  // 推荐
+  "description": "分析与你在同一个群的好友,可搜索你所有群共享资料",
+  "icons": {
+    "16": "icons/icon_16.png",
+    "48": "icons/icon_48.png",
+    "128": "icons/icon_128.png"
+  },
+
+  // 从中选一个（或者没有）
+  "page_action": {
+    "default_icon": "icons/icon_16.png",
+    "default_title": "分析与你在同一个群的好友,可搜索你所有群共享资料",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    //"appNotifications",
+    "http://qun.qzone.qq.com/",
+    "background",
+    "bookmarks",
+    "clipboardRead",
+    "clipboardWrite",
+    "contentSettings",
+    "contextMenus",
+    "cookies",
+    "debugger",
+    "history",
+    "idle",
+    "management",
+    "notifications",
+    "pageCapture",
+    "tabs",
+    "topSites",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "background": { "scripts": [ "background.js" ] },
+  /*content scripts与浏览器内的页面共享DOM,但是js运行时独立,
+    因此即使原页面已引用jquery或bootstrap库,本扩展如要使用仍需要注入!
+    */
+  "content_scripts": [
+    {
+      "matches": [ "http://qun.qzone.qq.com/", "http://qun.qzone.qq.com/*" ],
+      "js": [
+        "libs/jquery.min.js",
+        "content_script.js"
+      ],
+      "css": [
+
+      ]
+    }
+  ]
+  //,
+  //"web_accessible_resources": [
+  //  "lib/jsviews/jsviews.min.js.map"
+  //]
+}
