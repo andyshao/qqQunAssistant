@@ -20,7 +20,7 @@ function getApiToken() {
 
 //初始化数据库
 function initWebSQL() {
-    var db = openDatabase('qunDB', '1.0', 'QQ群助手数据库', 10 * 1024 * 1024);
+    var db = openDatabase('qunDB', '1.0', 'QQ群助手数据库', 30 * 1024 * 1024);
     db.transaction(function (tx) {
         //todo:重新构建表
         tx.executeSql('drop table if exists groups');
@@ -40,7 +40,7 @@ function saveGroups(db, data) {
         //延迟调用，否则服务器可能返回错误。
         setTimeout(function () {
             getMemberByGroupId(db, n.groupid);
-        }, 200);
+        }, i * 100);
     });
 }
 //获取成员列表保存到数据库
@@ -68,8 +68,27 @@ function getMemberByGroupId(db, groupId) {
                     tx.executeSql(sql);
                 });
             });
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            setTimeout(function () {
+                getMemberByGroupId(db, groupId);
+            }, 500);
         }
     });
+}
+
+function analysis() {
+    db.transaction(function (tx) {
+        tx.executeSql('select uin as qq,count(uin) as [count],(select nick from members ta where ta.uin=tb.uin limit 0,1) as nick from members tb group by uin having count(uin)>1 order by [count] desc', [], function (tx, results) {
+            var len = results.rows.length;
+            var arr = [];
+            for (i = 0; i < len; i++) {
+                arr.push(results.rows.item(i));
+            }
+            console.log(arr);
+        });
+    });
+
 }
 
 var api_url = {
